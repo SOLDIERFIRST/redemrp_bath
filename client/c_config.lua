@@ -50,13 +50,13 @@ Config.BathingZones = {
 		lady = `CS_BATHINGLADIES_01`,
 		door = -1847993131
 	},
-	--[[["Tumbleweed"] = {
+	["Tumbleweed"] = {
 		dict = "script@mini_game@bathing@BATHING_INTRO_OUTRO_TUMBLEWEED",
 		rag = vector4(-5513.76, -2972.3, -1.78, 15.0),
 		consumer = vector3(-5517.83, -2973.23, -0.78),
 		lady = `CS_BATHINGLADIES_01`,
 		door = 1682160693
-	}]]
+	}
 }
 
 Config.BathingModes = {
@@ -135,12 +135,12 @@ Config.Special = { ["shirts_full"] = 235, ["pants"] = 198 }
 Config.DressElements = {}
 
 Config.Prompts = {
-    { label = ("Skorzystaj z łaźni (%s$)"):format(Globals.Price), id = "START_BATHING" },
+    { label = ("Take a Bath: $%s"):format(Globals.Price), id = "START_BATHING" },
 
-	{ label = "Szoruj", id = "SCRUB", control = `INPUT_CONTEXT_X`, time = 2000 },
-    { label = ("Zamów luksusową kąpiel (%s$)"):format(Globals.Deluxe), id = "REQUEST_DELUXE_BATHING" },
+	{ label = "Scrub", id = "SCRUB", control = `INPUT_CONTEXT_X`, time = 2000 },
+    { label = ("Order Deluxe Bath: $%s"):format(Globals.Deluxe), id = "REQUEST_DELUXE_BATHING" },
 
-	{ label = "Wyjdź", id = "STOP_BATHING", control = `INPUT_INTERACT_NEG` }
+	{ label = "Finish Bath", id = "STOP_BATHING", control = `INPUT_INTERACT_NEG` }
 }
 
 Config.CreatedEntries = {}

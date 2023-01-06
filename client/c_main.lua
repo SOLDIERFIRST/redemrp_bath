@@ -38,8 +38,8 @@ GetClosestConsumer = function()
 	return nil
 end
 
---[[ Functions ]]--
-EnterBathing = function(town)
+RegisterNetEvent('rdr-bathing:StartBath')
+AddEventHandler('rdr-bathing:StartBath', function(town)
 	if Config.BathingZones[town] then
 		SetCurrentPedWeapon(PlayerPedId(), `WEAPON_UNARMED`, true, 0, true, true)
 
@@ -180,7 +180,7 @@ EnterBathing = function(town)
 			Citizen.Wait(10)
 		end
 	end
-end
+end)
 
 ExitBathing = function(animscene, town, cam)
 	if DoesEntityExist(BathingPed) then
@@ -223,10 +223,8 @@ ExitBathing = function(animscene, town, cam)
 	SetPedCanLegIk(PlayerPedId(), true)
 	SetPedLegIkMode(PlayerPedId(), 2)
 end
-
-EnterPremiumBath = function(animscene, town, cam)
-	--TriggerServerCallback("rdr-bathing:canBuyDeluxeBath", function(cb) // link own callback system
-		--if cb then 
+RegisterNetEvent('rdr-bathing:StartDeluxeBath')
+AddEventHandler('rdr-bathing:StartDeluxeBath', function(animscene, town, cam)
 			if not Citizen.InvokeNative(0x25557E324489393C, animscene) then return end
 			Citizen.InvokeNative(0x84EEDB2C6E650000, animscene) --// _DELETE_ANIM_SCENE
 
@@ -258,11 +256,12 @@ EnterPremiumBath = function(animscene, town, cam)
 			TogglePrompts({ "STOP_BATHING", "SCRUB" }, true)
 
 			RenderScriptCams(true, true, 0, true, false, 0)
-		--else
-		--	TogglePrompts({ "REQUEST_DELUXE_BATHING" }, false)
-		--end
-	--end, town)
-end
+end)
+
+RegisterNetEvent('rdr-bathing:HideDeluxePrompt')
+AddEventHandler('rdr-bathing:HideDeluxePrompt', function()
+	TogglePrompts({ "REQUEST_DELUXE_BATHING" }, false)
+end)
 
 ExitPremiumBath = function(animscene, town, cam, disableScrub)
 	local animscene = Citizen.InvokeNative(0x1FCA98E33C1437B3, Config.BathingZones[town].dict, 0,  "s_deluxe_outro", false, true)
@@ -323,42 +322,71 @@ UnloadAllStreamings = function()
 end
 
 UndressCharacter = function() --// link own undress logic
-	--[[for index,data in pairs(Config.UndressElements) do
-		TriggerEvent('skinchanger:getSkin', function(skin)
-			if skin[data.category] then
-				Config.DressElements[data.category] = skin[data.category]
+    -- Hat
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x9925C067, 0) -- Set target category, here the hash is for hats
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
 
-				if Config.Special[data.category] and not IsPedMale(PlayerPedId()) then
-					local item = exports["skinchanger"]:GetClothByIndex(data.category, Config.Special[data.category])                                 
-					if item then
-						Citizen.InvokeNative(0x59BD177A1A48600A, PlayerPedId(), data.hash)
-						Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), item.hash, true, item.isMP, false)
-					end
-                else
-                    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), data.hash, 0)
-                    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
-                end
+    -- Coat
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x662AC34, 0) -- Set target category, here the hash is for hats
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0) -- Actually remove the component
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xE06D30CE, 0) -- Set target category, here the hash is for hats
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0) -- Actually remove the component
 
-				Citizen.InvokeNative(0x704C908E9C405136, PlayerPedId())
-            end
-        end)
-    end]]
+    -- Shirt
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x2026C46D, 0) -- Set target category, here the hash is for hats
+    --[[Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(),tonumber(torso),false,true,true)--]]
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Gloves
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xEABE0032, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Pants
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x1D4C528A, 0) -- Set target category, here the hash is for hats
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Boots
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x777EC6EF, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Bandana
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x5FC29285, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Vests
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x485EE834, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Suspenders
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x877A2CF7, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Poncho
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xAF14310B, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Offhand
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0xB6B6122D, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Gunbelt
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x9B2C8B89, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+
+    -- Eyewear
+    Citizen.InvokeNative(0xD710A5007C2AC539, PlayerPedId(), 0x5E47CA6, 0)
+    Citizen.InvokeNative(0xCC8CA3E88256E58F, PlayerPedId(), 0, 1, 1, 1, 0)
+    
 end
 
 DressCharacter = function() --// link own dress logic
-	--[[for index,data in pairs(Config.UndressElements) do
-		if Config.DressElements[data.category] then
-			local item = exports["skinchanger"]:GetClothByIndex(data.category, Config.DressElements[data.category])
-			if item then
-				Citizen.InvokeNative(0x704C908E9C405136, PlayerPedId())
-				Citizen.InvokeNative(0x59BD177A1A48600A, PlayerPedId(), data.hash)
-				Citizen.InvokeNative(0xD3A7B003ED343FD9, PlayerPedId(), item.hash, false, item.isMP, false)
-				Config.DressElements[data.category] = nil
-			end
-		end
-    end]]
+    ClearPedEnvDirt(PlayerPedId())
+    ClearPedBloodDamage(PlayerPedId())
+    N_0xe3144b932dfdff65(PlayerPedId(), 0.0, -1, 1, 1)
+    ClearPedDamageDecalByZone(PlayerPedId(), 10, "ALL")
+    Citizen.InvokeNative(0x7F5D88333EE8A86F, PlayerPedId(), 1)
+    ExecuteCommand('loadclothing')
 end
-
 SetCurrentCleaniest = function(rag, value)
 	SetTaskMoveNetworkSignalFloat(PlayerPedId(), "Cleanliness_Right_Arm", value);
 	SetTaskMoveNetworkSignalFloat(PlayerPedId(), "Cleanliness_Left_Arm", value);
@@ -385,9 +413,9 @@ Action = function(name, p1, p2, p3)
 	TogglePrompts("ALL", false)
 
 	if (name == "START_BATHING") then
-		--TriggerServerCallback("rdr-bathing:canEnterBath", function(cb) if cb then EnterBathing(p1) end end, p1) // link own callback system
+		TriggerServerEvent("rdr-bathing:canEnterBath", p1)
 	elseif (name == "REQUEST_DELUXE_BATHING") then
-		EnterPremiumBath(p1, p2, p3)
+		TriggerServerEvent("rdr-bathing:canEnterDeluxeBath", p1 , p2 , p3)
 	elseif (name == "STOP_BATHING") then
 		ExitBathing(p1, p2, p3)
 	end
